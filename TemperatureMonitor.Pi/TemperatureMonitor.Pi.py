@@ -3,9 +3,8 @@ import RPi.GPIO as GPIO, time, math;
 from sevenSeg import isSet;
 import multiprocessing;
 
-temperature = 0;
-
-def worker():    
+def worker(sharedTemperature):    
+    temperature = sharedTemperature.value;
     tickPeriod = 0.005;
     maxTick = 1000;
     tick = 0;
@@ -39,44 +38,48 @@ def worker():
         tick += 1;
         time.sleep(tickPeriod)
 
-temperatureRefreshInterval = 2; # in seconds
+if __name__ == '__main__':
+    temperatureRefreshInterval = 2; # in seconds
 
-GPIO.setmode(GPIO.BCM)
-PIN1 = 17
-PIN2 = 27
-PIN3 = 22
-PIN4 = 5
-PIN5 = 6
-PIN7 = 13
-PIN10 = 19
-PIN11 = 26
+    GPIO.setmode(GPIO.BCM)
+    PIN1 = 17
+    PIN2 = 27
+    PIN3 = 22
+    PIN4 = 5
+    PIN5 = 6
+    PIN7 = 13
+    PIN10 = 19
+    PIN11 = 26
 
-PIN6 = 25 # D4
-PIN8 = 24 # D3
-PIN9 = 23 # D2
-PIN12 = 18 # D1
+    PIN6 = 25 # D4
+    PIN8 = 24 # D3
+    PIN9 = 23 # D2
+    PIN12 = 18 # D1
 
-GPIO.setup(PIN1, GPIO.OUT)
-GPIO.setup(PIN2, GPIO.OUT)
-GPIO.setup(PIN3, GPIO.OUT)
-GPIO.setup(PIN4, GPIO.OUT)
-GPIO.setup(PIN5, GPIO.OUT)
-GPIO.setup(PIN7, GPIO.OUT)
-GPIO.setup(PIN10, GPIO.OUT)
-GPIO.setup(PIN11, GPIO.OUT)
+    GPIO.setup(PIN1, GPIO.OUT)
+    GPIO.setup(PIN2, GPIO.OUT)
+    GPIO.setup(PIN3, GPIO.OUT)
+    GPIO.setup(PIN4, GPIO.OUT)
+    GPIO.setup(PIN5, GPIO.OUT)
+    GPIO.setup(PIN7, GPIO.OUT)
+    GPIO.setup(PIN10, GPIO.OUT)
+    GPIO.setup(PIN11, GPIO.OUT)
 
-GPIO.setup(PIN6, GPIO.OUT)
-GPIO.setup(PIN8, GPIO.OUT)
-GPIO.setup(PIN9, GPIO.OUT)
-GPIO.setup(PIN12, GPIO.OUT)
+    GPIO.setup(PIN6, GPIO.OUT)
+    GPIO.setup(PIN8, GPIO.OUT)
+    GPIO.setup(PIN9, GPIO.OUT)
+    GPIO.setup(PIN12, GPIO.OUT)
 
-sensor = W1ThermSensor()
+    sensor = W1ThermSensor()
 
-p = multiprocessing.Process(target= worker);
-p.daemon = True;
-p.start();
+    
+    sharedTemperature = multiprocessing.Value('d', 0.0);
 
-while (True):
-    temperature = sensor.get_temperature()
-    print (sensor.id + ': ' + str(temperature) + ' C');
-    time.sleep(temperatureRefreshInterval);
+    p = multiprocessing.Process(target=worker, args=(sharedTemperature));
+    p.daemon = True;
+    p.start();
+
+    while (True):
+        sharedTemperature.value = sensor.get_temperature();
+        print (sensor.id + ': ' + str(sharedTemperature.value));
+        time.sleep(temperatureRefreshInterval);
