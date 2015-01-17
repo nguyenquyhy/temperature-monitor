@@ -79,4 +79,4 @@ p.start();
 while (True):
     temperature = sensor.get_temperature()
     print (sensor.id + ': ' + str(temperature) + ' C');
-    sleep(temperatureRefreshInterval);
+    time.sleep(temperatureRefreshInterval);
