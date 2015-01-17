@@ -4,12 +4,13 @@ from sevenSeg import isSet;
 import multiprocessing;
 
 def worker(sharedTemp):    
-    temperature = sharedTemp.value;
-    tickPeriod = 0.005;
+    print('Worker started!');
+    tickPeriod = 0.001;
     maxTick = 1000;
     tick = 0;
     digits = [0,0,0,0];
     while True:
+        temperature = sharedTemp.value;
         digitIndex = tick % len(digits);
 
         digits[0] = math.floor(temperature / 10);
