@@ -3,8 +3,8 @@ import RPi.GPIO as GPIO, time, math;
 from sevenSeg import isSet;
 import multiprocessing;
 
-def worker(sharedTemperature):    
-    temperature = sharedTemperature.value;
+def worker(sharedTemp):    
+    temperature = sharedTemp.value;
     tickPeriod = 0.005;
     maxTick = 1000;
     tick = 0;
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     
     sharedTemperature = multiprocessing.Value('d', 0.0);
 
-    p = multiprocessing.Process(target=worker, args=(sharedTemperature));
+    p = multiprocessing.Process(target=worker, args=(sharedTemperature,));
     p.daemon = True;
     p.start();
 
