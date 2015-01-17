@@ -1,0 +1,19 @@
+{
+	"name": "bower",
+	"license": "Apache-2.0",
+	"private": true,
+	"dependencies": {
+		"jquery": "~2.1.3",
+		"signalr": "~2.2.0"
+	},
+	"exportsOverride": {
+		"bootstrap": {
+			"js": "dist/js/*.*",
+			"css": "dist/css/*.*",
+			"fonts": "dist/fonts/*.*"
+		},
+		"jquery": {
+			"": "dist/jquery.{js,min.js,min.map}"
+		}
+	}
+}

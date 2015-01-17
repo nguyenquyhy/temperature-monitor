@@ -1,7 +1,6 @@
+import RPi.GPIO as GPIO, time, math, multiprocessing, httplib;
 from w1thermsensor import W1ThermSensor
-import RPi.GPIO as GPIO, time, math;
 from sevenSeg import isSet;
-import multiprocessing;
 
 def worker(sharedTemp):    
     print('Worker started!');
@@ -17,7 +16,6 @@ def worker(sharedTemp):
         digits[1] = math.floor(temperature) % 10;
         digits[2] = math.floor(temperature * 10) % 10;
         digits[3] = math.floor(temperature * 100) % 10;
-        #print str(digit0) + ' ' + str(digit1);
     
         GPIO.output(PIN1, isSet(1, digits[digitIndex], digitIndex == 1))
         GPIO.output(PIN2, isSet(2, digits[digitIndex], digitIndex == 1))
@@ -82,4 +80,12 @@ if __name__ == '__main__':
     while (True):
         sharedTemperature.value = sensor.get_temperature();
         print (sensor.id + ': ' + str(sharedTemperature.value));
+        body = '{ "id": "' + sensor.id + '", "Value": ' + str(sharedTemperature.value) + ' }';
+        headers = { "Content-type": "application/json" }
+        conn = httplib.HTTPConnection(host="temperaturemonitoring.azurewebsites.net")
+        conn.request("POST", "/api/temperature", body, headers)
+        response = conn.getresponse()
+        print response.status, response.reason
+        conn.close()
+
         time.sleep(temperatureRefreshInterval);

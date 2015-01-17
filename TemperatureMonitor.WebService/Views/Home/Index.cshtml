@@ -1,0 +1,36 @@
+﻿<!doctype html>
+<html>
+<head>
+    <title>Temperature monitor</title>
+</head>
+<body>
+    <p id="temperature" style="font-size: 4em;">0</p>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/signalr/jquery.signalr.js"></script>
+    <script src="~/signalr/hubs" type="text/javascript"></script>
+    <script>
+        $(function () {
+            var textTemperature = $('#temperature');
+
+            $.connection.hub.logging = true;
+
+            var temperatureHub = $.connection.temperatureHub;
+
+            temperatureHub.client.echo = function (message) {
+                alert(message);
+            };
+
+            temperatureHub.client.update = function (id, temperature) {
+                textTemperature.text(temperature);
+            };
+
+            //=================
+            // SIGNALR IS READY
+            //=================
+            $.connection.hub.start().done(function () {
+                console.log('Connection is open');
+            });
+        });
+    </script>
+</body>
+</html>
