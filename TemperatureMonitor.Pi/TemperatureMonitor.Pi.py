@@ -1,10 +1,44 @@
 from w1thermsensor import W1ThermSensor
 import RPi.GPIO as GPIO, time, math;
 from sevenSeg import isSet;
+import multiprocessing;
 
-tickPeriod = 0.005;
-maxTick = 1000;
-digitCount = 4;
+temperature = 0;
+
+def worker():    
+    tickPeriod = 0.005;
+    maxTick = 1000;
+    tick = 0;
+    digits = [0,0,0,0];
+    while True:
+        digitIndex = tick % len(digits);
+
+        digits[0] = math.floor(temperature / 10);
+        digits[1] = math.floor(temperature) % 10;
+        digits[2] = math.floor(temperature * 10) % 10;
+        digits[3] = math.floor(temperature * 100) % 10;
+        #print str(digit0) + ' ' + str(digit1);
+    
+        GPIO.output(PIN1, isSet(1, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN2, isSet(2, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN3, isSet(3, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN4, isSet(4, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN5, isSet(5, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN7, isSet(7, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN10, isSet(10, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN11, isSet(11, digits[digitIndex], digitIndex == 1))
+    
+        GPIO.output(PIN12, digitIndex == 0)
+        GPIO.output(PIN9, digitIndex == 1)
+        GPIO.output(PIN8, digitIndex == 2)
+        GPIO.output(PIN6, digitIndex == 3)
+        
+        if tick >= maxTick:
+            tick = 0;
+    
+        tick += 1;
+        time.sleep(tickPeriod)
+
 temperatureRefreshInterval = 2; # in seconds
 
 GPIO.setmode(GPIO.BCM)
@@ -38,45 +72,11 @@ GPIO.setup(PIN12, GPIO.OUT)
 
 sensor = W1ThermSensor()
 
-tick = 0;
-temperature = 0;
-digits = [0,0,0,0];
+p = multiprocessing.Process(target= worker);
+p.daemon = True;
+p.start();
 
-## Precompute
-temperatureRefreshIntervalInTick = math.floor(temperatureRefreshInterval / tickPeriod);
-
-while True:
-	digitIndex = tick % digitCount;
-	
-	digits[0] = math.floor(temperature / 10);
-	digits[1] = math.floor(temperature) % 10;
-	digits[2] = math.floor(temperature * 10) % 10;
-	digits[3] = math.floor(temperature * 100) % 10;
-	#print str(digit0) + ' ' + str(digit1);
-	
-	GPIO.output(PIN1, isSet(1, digits[digitIndex], digitIndex == 1))
-	GPIO.output(PIN2, isSet(2, digits[digitIndex], digitIndex == 1))
-	GPIO.output(PIN3, isSet(3, digits[digitIndex], digitIndex == 1))
-	GPIO.output(PIN4, isSet(4, digits[digitIndex], digitIndex == 1))
-	GPIO.output(PIN5, isSet(5, digits[digitIndex], digitIndex == 1))
-	GPIO.output(PIN7, isSet(7, digits[digitIndex], digitIndex == 1))
-	GPIO.output(PIN10, isSet(10, digits[digitIndex], digitIndex == 1))
-	GPIO.output(PIN11, isSet(11, digits[digitIndex], digitIndex == 1))
-	
-	GPIO.output(PIN12, digitIndex == 0)
-	GPIO.output(PIN9, digitIndex == 1)
-	GPIO.output(PIN8, digitIndex == 2)
-	GPIO.output(PIN6, digitIndex == 3)
-	
-	if tick % temperatureRefreshIntervalInTick == 0:
-		GPIO.output(PIN12, False)
-		GPIO.output(PIN9, False)
-		temperature = sensor.get_temperature()
-		print (temperature);
-		
-	if tick >= maxTick:
-		tick = 0;
-	
-	tick += 1;
-	time.sleep(tickPeriod)
-	
+while (True):
+    temperature = sensor.get_temperature()
+    print (sensor.id + ': ' + str(temperature) + ' C');
+    sleep(temperatureRefreshInterval);
