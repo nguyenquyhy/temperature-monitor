@@ -5,7 +5,7 @@ import multiprocessing;
 
 def worker(sharedTemp):    
     print('Worker started!');
-    tickPeriod = 0.001;
+    tickPeriod = 0.003;
     maxTick = 1000;
     tick = 0;
     digits = [0,0,0,0];
@@ -73,7 +73,6 @@ if __name__ == '__main__':
 
     sensor = W1ThermSensor()
 
-    
     sharedTemperature = multiprocessing.Value('d', 0.0);
 
     p = multiprocessing.Process(target=worker, args=(sharedTemperature,));
