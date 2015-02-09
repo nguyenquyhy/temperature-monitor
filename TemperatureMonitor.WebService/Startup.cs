@@ -7,11 +7,22 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
 using Microsoft.AspNet.Diagnostics;
+using Microsoft.Framework.ConfigurationModel;
 
 namespace TemperatureMonitor.WebService
 {
     public class Startup
     {
+        public static Configuration Configuration { get; private set; }
+
+        public Startup()
+        {
+            Configuration = new Configuration();
+            Configuration
+                .AddIniFile("~/Config.json")
+                .AddEnvironmentVariables();
+        }
+
         // This method gets called by the runtime.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -23,7 +34,7 @@ namespace TemperatureMonitor.WebService
             // Add Identity services to the services container.
             //services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>(Configuration);
 
-            services.AddMvc();
+            services.AddMvc(Configuration);
             //    .Configure<MvcOptions>(options =>
             //{
             //    int position = options.OutputFormatters.FindIndex(f =>
