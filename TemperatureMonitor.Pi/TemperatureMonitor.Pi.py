@@ -4,8 +4,13 @@ from sevenSeg import isSet;
 
 def worker(sharedTemp):    
     print('Worker started!');
-    tickPeriod = 0.003;
+    
+    #tickPeriod = 0.003;
+    tickPeriod = 0.008;
     maxTick = 1000;
+
+    flip = True;
+
     tick = 0;
     digits = [0,0,0,0];
     while True:
@@ -17,14 +22,14 @@ def worker(sharedTemp):
         digits[2] = math.floor(temperature * 10) % 10;
         digits[3] = math.floor(temperature * 100) % 10;
     
-        GPIO.output(PIN1, isSet(1, digits[digitIndex], digitIndex == 1))
-        GPIO.output(PIN2, isSet(2, digits[digitIndex], digitIndex == 1))
-        GPIO.output(PIN3, isSet(3, digits[digitIndex], digitIndex == 1))
-        GPIO.output(PIN4, isSet(4, digits[digitIndex], digitIndex == 1))
-        GPIO.output(PIN5, isSet(5, digits[digitIndex], digitIndex == 1))
-        GPIO.output(PIN7, isSet(7, digits[digitIndex], digitIndex == 1))
-        GPIO.output(PIN10, isSet(10, digits[digitIndex], digitIndex == 1))
-        GPIO.output(PIN11, isSet(11, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN1, flip ^ isSet(1, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN2, flip ^ isSet(2, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN3, flip ^ isSet(3, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN4, flip ^ isSet(4, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN5, flip ^ isSet(5, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN7, flip ^ isSet(7, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN10, flip ^ isSet(10, digits[digitIndex], digitIndex == 1))
+        GPIO.output(PIN11, flip ^ isSet(11, digits[digitIndex], digitIndex == 1))
     
         GPIO.output(PIN12, digitIndex == 0)
         GPIO.output(PIN9, digitIndex == 1)
