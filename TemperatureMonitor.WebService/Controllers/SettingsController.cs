@@ -15,24 +15,24 @@ namespace TemperatureMonitor.WebService.Controllers
     [Route("api/[controller]")]
     public class SettingsController : Controller
     {
-        private BaseConfigurationSource configuration;
         private TableStorageLogic tableStorage;
+        private string tableName;
 
-        public SettingsController(BaseConfigurationSource configuration)
+        public SettingsController()
         {
-            this.configuration = configuration;
-            this.tableStorage = new TableStorageLogic(configuration);
+            this.tableName = Startup.Configuration.Get("Data:Settings_TableName");
+            this.tableStorage = new TableStorageLogic(Startup.Configuration.Get("Data:AzureStorage_ConnectionString"));
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public async Task<SettingsDTO> Get(string id)
         {
-            var settings = await tableStorage.GetAsync<SettingsModel>(configuration.Data["Settings_TableName"], "Settings", id);
+            var settings = await tableStorage.GetAsync<SettingsModel>(tableName, "Settings", id);
             if (settings != null)
                 return settings.ToDTO();
             else
-                return new SettingsDTO { DeviceId = id };
+                return new SettingsDTO { SensorId = id };
         }
 
         // POST api/values
@@ -46,7 +46,7 @@ namespace TemperatureMonitor.WebService.Controllers
             else
             {
                 var settings = new SettingsModel("Settings", value);
-                await tableStorage.AddOrReplaceAsync(configuration.Data["Settings_TableName"], settings);
+                await tableStorage.AddOrReplaceAsync(tableName, settings);
                 Context.Response.StatusCode = 201;
             }
         }
@@ -55,10 +55,10 @@ namespace TemperatureMonitor.WebService.Controllers
         [HttpDelete("{id}")]
         public async Task Delete(string id)
         {
-            var settings = await tableStorage.GetAsync<SettingsModel>(configuration.Data["Settings_TableName"], "Settings", id);
+            var settings = await tableStorage.GetAsync<SettingsModel>(tableName, "Settings", id);
             if (settings != null)
             {
-                await tableStorage.RemoveAsync(configuration.Data["Settings_TableName"], settings);
+                await tableStorage.RemoveAsync(tableName, settings);
                 Context.Response.StatusCode = 204;
             }
             else

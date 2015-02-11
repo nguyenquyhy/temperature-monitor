@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace TemperatureMonitor.WebService.Models
+namespace TemperatureMonitor.WebService.DTOs
 {
-    public class Temperature
+    public class TemperatureDTO
     {
         public string Id { get; set; }
         public double Value { get; set; }

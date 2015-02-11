@@ -1,6 +1,6 @@
 ﻿{
     "Data": {
 		"AzureStorage_ConnectionString": "UseDevelopmentStorage=true;",
-		"Settings_TableName":  "Settings"
+		"Settings_TableName": "Settings"
     }
 }

@@ -1,36 +1,47 @@
 ﻿<!doctype html>
 <html>
 <head>
-    <title>Temperature monitor</title>
+    <title>Temperature Monitor</title>
+    <link href="~/lib/metro-bootstrap/metro-bootstrap.css" rel="stylesheet" />
 </head>
 <body>
-    <p id="temperature" style="font-size: 4em;">0</p>
+    <div class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Temperature Monitor", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Integration", "Index", "Help", new { area = "" }, null)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <div data-bind="foreach: liveSensors">
+            <p data-bind="text: name"></p>
+            <p><span data-bind="text: value" style="font-size: 4em;">0</span>&deg;C</p>
+        </div>
+        <p data-bind="text: statusString"></p>
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - vSoft Studio</p>
+        </footer>
+    </div>
     <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/lib/knockoutjs/knockout.js"></script>
+    <script src="~/lib/underscore/underscore.js"></script>
     <script src="~/lib/signalr/jquery.signalr.js"></script>
     <script src="~/signalr/hubs" type="text/javascript"></script>
-    <script>
-        $(function () {
-            var textTemperature = $('#temperature');
 
-            $.connection.hub.logging = true;
-
-            var temperatureHub = $.connection.temperatureHub;
-
-            temperatureHub.client.echo = function (message) {
-                alert(message);
-            };
-
-            temperatureHub.client.update = function (id, temperature) {
-                textTemperature.text(temperature);
-            };
-
-            //=================
-            // SIGNALR IS READY
-            //=================
-            $.connection.hub.start().done(function () {
-                console.log('Connection is open');
-            });
-        });
-    </script>
+    <script src="~/js/viewmodels/livesensorviewmodel.js"></script>
+    <script src="~/js/viewmodels/appviewmodel.js"></script>
+    <script src="~/js/app.js"></script>
 </body>
 </html>

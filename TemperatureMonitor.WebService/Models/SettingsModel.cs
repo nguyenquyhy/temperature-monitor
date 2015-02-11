@@ -11,12 +11,14 @@ namespace TemperatureMonitor.WebService.Models
 
         }
 
-        public SettingsModel(string partitionKey, SettingsDTO dto) : base (partitionKey, dto.DeviceId)
+        public SettingsModel(string partitionKey, SettingsDTO dto) : base (partitionKey, dto.SensorId)
         {
+            Name = dto.Name;
             MaxTemperature = dto.MaxTemperature;
             MinTemperature = dto.MinTemperature;
         }
 
+        public string Name { get; set; }
         public double? MaxTemperature { get; set; }
         public double? MinTemperature { get; set; }
 
@@ -24,7 +26,8 @@ namespace TemperatureMonitor.WebService.Models
         {
             return new SettingsDTO
             {
-                DeviceId = RowKey,
+                SensorId = RowKey,
+                Name = Name,
                 MaxTemperature = MaxTemperature,
                 MinTemperature = MinTemperature
             };

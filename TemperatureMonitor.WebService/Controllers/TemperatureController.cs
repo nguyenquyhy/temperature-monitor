@@ -6,6 +6,8 @@ using TemperatureMonitor.WebService.Hubs;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNet.SignalR;
 using TemperatureMonitor.WebService.Models;
+using Microsoft.Framework.ConfigurationModel;
+using TemperatureMonitor.WebService.DTOs;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,7 +25,7 @@ namespace TemperatureMonitor.WebService.Controllers
 
         // POST api/Temperature
         [HttpPost]
-        public void Post([FromBody]Temperature value)
+        public void Post([FromBody]TemperatureDTO value)
         {
             temperatureHub.Clients.All.update(value.Id, value.Value);
         }

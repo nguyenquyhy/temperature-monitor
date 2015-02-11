@@ -12,9 +12,9 @@ namespace TemperatureMonitor.WebService.Logics
     {
         private CloudStorageAccount account;
 
-        public TableStorageLogic(BaseConfigurationSource configurationSource)
+        public TableStorageLogic(string connectionString)
         {
-            account = CloudStorageAccount.Parse(configurationSource.Data["AzureStorage_ConnectionString"]);
+            account = CloudStorageAccount.Parse(connectionString);
         }
 
         public async Task<T> GetAsync<T>(string tableName, string partitionKey, string rowKey) where T : class, ITableEntity

@@ -19,7 +19,7 @@ namespace TemperatureMonitor.WebService
         {
             Configuration = new Configuration();
             Configuration
-                .AddIniFile("~/Config.json")
+                .AddJsonFile("Config.json")
                 .AddEnvironmentVariables();
         }
 
