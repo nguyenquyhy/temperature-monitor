@@ -22,7 +22,7 @@ namespace TemperatureMonitor.WebService.Models
         {
             return new TemperatureDTO
             {
-                Id = PartitionKey,
+                SensorId = PartitionKey,
                 Value = Value
             };
         }

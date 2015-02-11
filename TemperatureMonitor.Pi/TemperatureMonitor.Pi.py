@@ -85,7 +85,7 @@ if __name__ == '__main__':
     while (True):
         sharedTemperature.value = sensor.get_temperature();
         print (sensor.id + ': ' + str(sharedTemperature.value));
-        body = '{ "sensorId": "' + sensor.id + '", "Value": ' + str(sharedTemperature.value) + ' }';
+        body = '{ "SensorId": "' + sensor.id + '", "Value": ' + str(sharedTemperature.value) + ' }';
         headers = { "Content-type": "application/json" }
         conn = httplib.HTTPConnection(host="temperaturemonitoring.azurewebsites.net")
         conn.request("POST", "/api/temperature", body, headers)
