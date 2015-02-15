@@ -24,7 +24,7 @@
     </div>
     <div class="container body-content">
         <div data-bind="foreach: liveSensors">
-            <p data-bind="text: name"></p>
+            <p><span data-bind="text: name"></span> (last update: <span data-bind="text: lastSignal"></span>)</p>
             <p><span data-bind="text: value" style="font-size: 4em;">0</span>&deg;C</p>
         </div>
         <p data-bind="text: statusString"></p>

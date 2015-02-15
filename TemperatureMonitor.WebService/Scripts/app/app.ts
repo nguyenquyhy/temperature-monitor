@@ -11,11 +11,10 @@ $(() => {
             return sensor.id == sensorId
         });
         if (matchedSensor !== undefined) {
-            matchedSensor.value(temperature);
-        }
-        else {
+            matchedSensor.update(temperature);
+        } else {
             var newSensor = new LiveSensorViewModel(sensorId, sensorId);
-            newSensor.value(temperature);
+            newSensor.update(temperature);
             appViewModel.liveSensors.push(newSensor);
         }
     };

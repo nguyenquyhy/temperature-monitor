@@ -25,10 +25,10 @@ namespace TemperatureMonitor.WebService.Controllers
 
         // POST api/Temperature
         [HttpPost]
-        public void Post([FromBody]TemperatureDTO value)
+        public ActionResult Post([FromBody]TemperatureDTO value)
         {
             temperatureHub.Clients.All.update(value.SensorId, value.Value);
-            Context.Response.StatusCode = 200;
+            return new HttpStatusCodeResult(200);
         }
 
     }
